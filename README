@@ -1,0 +1,127 @@
+lioraryepaz
+
+=============================
+=  File description - EX3   =
+=============================
+ClosedHashSet.java
+CollectionFacadeSet.java
+LinkedListWrapper.java
+OpenHashSet.java
+SimpleHashSet.java
+SimpleSetPerformanceAnalyzer.java
+README
+RESULTS
+
+=============================
+=          Design           =
+=============================
+our code divide into 3 parts - SimpleHashSet abstract class which implements SimpleSet interface, and 2 sub-classes
+inherit from it - OpenHashSet(with LinkedListWrapper Array) & CloseHashSet(with Object array).
+The CollectionFacadeSet wrap every collection as SimpleSet, so we can use all SimpleSets in our analysis at
+SimpleSetPerformanceAnalyzer.
+one additional class i added is LinkedListWrapper, a clss which has a LinkedLIst, that way i can create an array of
+LinkedLists in a weird way, but possible. this class has all of the methods needed in order to handle LinkedLists -
+add, remove, contain.
+
+=============================
+=  Implementation details   =
+=============================
+as i explained earlier, the way i implemented OpenHashSet array is with a LinkedListWrapper object in every cell.
+this was the most elegant way, which is also very modular and allow us to change and upgrade the wrapper at the future.
+
+as to the deletion mechanism at the CloseHashSet, i actually used an  array of objects, so i could then use an
+'stupid' and empty instance of Object(). i used this object as my deletion marker, and looked == for his reference in
+my iterations on the array. i really didn't wanted to create a special class only for the sake of my deletion mark,
+so i tried to use polymorphism as a benefit, like we have learned, and look at the the strings from an object
+perspective. also, we remember that equals() is actually method all objects inherit from Object class.
+
+as a JVM warm up for my analysis, before every set of 1000 loop iterations for my timing, i added before hand (not as
+part of the timing) 150 loops for a warm-up.
+
+
+=============================
+=    Answers to questions   =
+=============================
+
+Analysis results -
+
+#These values correspond to the time it takes (in ms) to insert data1 to all data structures
+OpenHashSet_AddData1 = 111482
+ClosedHashSet_AddData1 = 155633
+*  TreeSet_AddData1 = 81 *
+LinkedList_AddData1 = 51044
+HashSet_AddData1 = 394
+
+#These values correspond to the time it takes (in ms) to insert data2 to all data structures
+OpenHashSet_AddData2 = 274
+ClosedHashSet_AddData2 = 27
+TreeSet_AddData2 = 46.
+LinkedList_AddData2 = 35102
+*  HashSet_AddData2 = 14  *
+
+data1-data2 init comparision -
+OpenHashSet_AddData1 = 111482 - 274
+ClosedHashSet_AddData1 = 155633 - 27
+TreeSet_AddData1 = 81 - 46
+LinkedList_AddData1 = 51044 - 35102
+HashSet_AddData1 = 394 - 14
+
+"hi" - data1 -
+OpenHashSet_Contains_hi1 = 2097
+*  ClosedHashSet_Contains_hi1 = 0  *
+*  TreeSet_Contains_hi1 = 0  *
+LinkedList_Contains_hi1 = 968884
+*  HashSet_Contains_hi1 = 0  *
+
+"-13170890158" - data1
+OpenHashSet_Contains_negative = 1088421
+ClosedHashSet_Contains_negative = 3447718
+TreeSet_Contains_negative = 2097
+LinkedList_Contains_negative = 1023410
+*  HashSet_Contains_negative = 0  *
+
+data1 hi - negative comparision -
+OpenHashSet_AddData1 = 2097 - 1088421
+ClosedHashSet_AddData1 = 0 - 3447718
+TreeSet_AddData1 = 0 - 2097
+LinkedList_AddData1 = 968884 - 1023410
+HashSet_AddData1 = 0 - 0
+
+"23" - data2
+*  OpenHashSet_Contains_23 = 0  *
+*  ClosedHashSet_Contains_23 = 0  *
+TreeSet_Contains_23 = 2097
+*  LinkedList_Contains_23 = 0  *
+HashSet_Contains_23 = 2097
+
+"hi" - data2
+*  OpenHashSet_Contains_hi2 = 0  *
+*  ClosedHashSet_Contains_hi2 = 0  *
+*  TreeSet_Contains_hi2 = 0 **
+LinkedList_Contains_hi2 = 861929
+*  HashSet_Contains_hi2 = 0  *
+
+data2 23 - hi comparision -
+OpenHashSet_AddData1 = 0 - 0
+ClosedHashSet_AddData1 = 0 - 0
+TreeSet_AddData1 = 2097 - 0
+LinkedList_AddData1 = 0 - 861929
+HashSet_AddData1 = 2097 - 0
+
+OpenHashSet & CloseHashSet both took a lot of time to initiate the data1 file, because all of the values share the
+same hash code, our implementations didn't properly prepare for that situation - very rare obviously.
+also, in order to find the negative value, we needed to iterate over all of our set, from the same reason which is
+also extremely rare.
+OpenHashSet - great for storing random data (not worst case of same hash) and searching for values.
+CloseHashSet - better than open in normal cases of wide spread of hash values, but worse then open in the worst case.
+TreeSet - great for everything basically
+LinkedList - bad in searching for values, but not so bad in insertion rate (when sets lose their hash spread advantage)
+hashSet - good at everything, very fast
+
+closeHashSet seems to be better in searching for values, but when  it comes to the worst case, openHashSet wins
+Java's hashSet won all of us!!!!!!
+expected to the bad times in our implementation of data1, was suprise from how well javas solutions managed to deal
+with it. also, linked list failed me time & time again.
+
+for clamping & increasing i used bitwise operators (&, >>, <<), to  save time and create more efficiency.
+
